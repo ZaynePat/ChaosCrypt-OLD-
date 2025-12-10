@@ -1,6 +1,7 @@
 from PIL import Image
 import numpy as np
 from pdf2image import convert_from_path
+import os 
 
 # logistic map 
 def logistic_map(x0, r, length):
@@ -29,7 +30,8 @@ def chebyshev_map(x0, k, length):
 def encrypt_image_color(img_path,
                         logistic_params=(0.5, 3.99),
                         tent_params=(0.5, 0.7),
-                        cheb_params=(0.5, 2)):
+                        cheb_params=(0.5, 2),
+                        out_dir="Encrypted_Images"):
 
     # Step 1: Load image as RGB
     img = Image.open(img_path).convert('RGB')
@@ -68,29 +70,33 @@ def encrypt_image_color(img_path,
         # Reshape back to 2D channel
         encrypted_img_array[..., ch] = encrypted_pixels.reshape(H, W)
 
-    # Rebuild and save RGB encrypted image
     encrypted_img = Image.fromarray(encrypted_img_array)
-    out_name = img_path.replace('.png', '_encrypted.png')
+
+    # Rebuild and save RGB encrypted image
+    os.makedirs(out_dir, exist_ok=True)
+    base = os.path.basename(img_path).replace('.png', '_encrypted.png')
+    out_name = os.path.join(out_dir, base)
+
     encrypted_img.save(out_name)
     print(f"Encrypted image saved as '{out_name}'")
     return out_name, img_array.shape
 
 # PDF → PNG (RGB) and encrypt each page
-def pdf_to_png_and_encrypt(pdf_path):
-    poppler_path = r"C:\SemillaJava\arnoldscatmap\Poppler\poppler-25.07.0\Library\bin"
+def pdf_to_png_and_encrypt(pdf_path, out_dir="Encrypted_Images"):
+    poppler_path = r"C:\SemillaJava\ChaosCrypt\Poppler\poppler-25.07.0\Library\bin"
 
     pages = convert_from_path(pdf_path, poppler_path=poppler_path)
     encrypted_files = []
 
     for i, page in enumerate(pages):
         png_name = f"page_{i+1}.png"
-        page = page.convert('RGB')   # ensure RGB
+        page = page.convert('RGB')
         page.save(png_name, 'PNG')
 
-        enc_name, shape = encrypt_image_color(png_name)
+        enc_name, shape = encrypt_image_color(png_name, out_dir=out_dir)
         encrypted_files.append((enc_name, shape))
 
     return encrypted_files
 
-pdf_to_png_and_encrypt('SAMPLE FILE.pdf')
+pdf_to_png_and_encrypt('example.pdf', out_dir="Encrypted_Images1")
 
