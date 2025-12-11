@@ -58,12 +58,12 @@ def encrypt_image_color(img_path,
         cheb_seq = chebyshev_map(*cheb_params, length)
 
         # Step 3 & 4: Permutation key and pixel shuffle
-        mix_seq = log_seq + tent_seq + cheb_seq
-        perm_key = np.argsort(mix_seq)
+        hybrid_seq = log_seq + tent_seq + cheb_seq
+        perm_key = np.argsort(hybrid_seq)
         permuted_pixels = pixels[perm_key]
 
         # Step 5 & 6: Diffusion key and pixel masking
-        diff_key = (mix_seq * 255) % 256
+        diff_key = (hybrid_seq * 255) % 256
         diff_key = diff_key.astype('uint8')
         encrypted_pixels = np.bitwise_xor(permuted_pixels, diff_key)
 
@@ -98,5 +98,5 @@ def pdf_to_png_and_encrypt(pdf_path, out_dir="Encrypted_Images"):
 
     return encrypted_files
             #sample file you want to encrypt    #file name you want to save the encrypted images
-pdf_to_png_and_encrypt('example.pdf', out_dir="Encrypted_Images1")
+pdf_to_png_and_encrypt('Example2.pdf', out_dir="Encrypted_Images")
 

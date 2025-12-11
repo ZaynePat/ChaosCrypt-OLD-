@@ -12,11 +12,18 @@ public_key = private_key.public_key()
 
 #sample chaos parameters
 chaos_params = {
-    "logistic": {"x0": 0.5, "r": 3.99},
-    "tent":     {"x0": 0.5, "mu": 0.7},
-    "cheb":     {"x0": 0.5, "k": 2},
+    "image Shape": (2339, 1655, 3),
+    "Logistic map": (0.5, 3.99),
+    "Tent map":     (0.5, 0.7),
+    "Chebyshev map":     (0.5, 2),
 }
-
+"""
+example output:
+image shape: (2339, 1653, 3)
+Logistic map parameters: (0.5, 3.99)
+Tent map parameters: (0.5, 0.7)
+Chebyshev map parameters: (0.5, 2)
+"""
 #to show chaos parameters
 print("Original params", chaos_params)
 
